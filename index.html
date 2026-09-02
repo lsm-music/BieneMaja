@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welche Serie passt zu Ihrem Kind?</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      background: #e6f4ff;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #222;
+    }
+
+    .quiz {
+      max-width: 720px;
+      margin: 30px auto;
+      padding: 32px;
+      background: white;
+      border-radius: 14px;
+      box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+    }
+
+    h1 {
+      margin-top: 0;
+      text-align: center;
+      font-size: 1.8rem;
+    }
+
+    .progress {
+      text-align: center;
+      color: #666;
+      margin-bottom: 28px;
+      font-size: 0.95rem;
+    }
+
+    .question {
+      font-size: 1.35rem;
+      line-height: 1.5;
+      text-align: center;
+      margin: 30px 0;
+    }
+
+    .answers {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      min-width: 130px;
+      padding: 14px 24px;
+      border: 1px solid #bbb;
+      border-radius: 8px;
+      background: #f0f0f0;
+      color: #222;
+      font-size: 1.05rem;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #e2e2e2;
+    }
+
+    .result {
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    .result h2 {
+      font-size: 1.6rem;
+      margin-bottom: 20px;
+    }
+
+    .score {
+      font-size: 1rem;
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    .restart {
+      margin-top: 20px;
+    }
+
+    @media (max-width: 600px) {
+      body { padding: 10px; }
+      .quiz { padding: 22px 16px; margin: 10px auto; }
+      .question { font-size: 1.15rem; }
+      button { width: 100%; }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="quiz" id="quiz">
+    <h1>Filmberater</h1>
+    <div id="content"></div>
+  </main>
+
+  <script>
+    const questions = [
+      {
+        text: "Mir ist es wichtig, die Medienzeit auf ein Minimum zu beschränken.",
+        yes: 1,
+        no: 0
+      },
+      {
+        text: "Ich bevorzuge ein möglichst ruhiges Erzähltempo.",
+        yes: 0,
+        no: 1
+      },
+      {
+        text: "Mein Kind gruselt sich schnell.",
+        yes: 1,
+        no: 0
+      },
+      {
+        text: "Mein Kind braucht viel Action, um sich nicht zu langweilen.",
+        yes: 1,
+        no: 0
+      },
+      {
+        text: "Mein Kind soll nicht mit Aussagen veralteter Pädagogik konfrontiert werden.",
+        yes: 1,
+        no: 0
+      },
+      {
+        text: "Ich mag keine hektischen Bildfolgen.",
+        yes: 0,
+        no: 1
+      },
+      {
+        text: "Ich möchte, dass mein Kind viel über die Natur lernt.",
+        yes: 0,
+        no: 1
+      }
+    ];
+
+    let currentQuestion = 0;
+    let points = 0;
+
+    const content = document.getElementById("content");
+
+    function showQuestion() {
+      const q = questions[currentQuestion];
+
+      content.innerHTML = `
+        <div class="progress">
+          Frage ${currentQuestion + 1} von ${questions.length}
+        </div>
+
+        <div class="question">
+          ${q.text}
+        </div>
+
+        <div class="answers">
+          <button type="button" onclick="answer('yes')">Ja</button>
+          <button type="button" onclick="answer('no')">Nein</button>
+        </div>
+      `;
+    }
+
+    function answer(choice) {
+      const q = questions[currentQuestion];
+
+      if (choice === "yes") {
+        points += q.yes;
+      } else {
+        points += q.no;
+      }
+
+      currentQuestion++;
+
+      if (currentQuestion < questions.length) {
+        showQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      let heading;
+      let text;
+
+      if (points <= 1) {
+        heading = "Ihre Empfehlung: Die alte Serie";
+        text = "Schauen Sie mit Ihrem Kind die alte Serie!";
+      } else if (points <= 3) {
+        heading = "Ihre Empfehlung: Eher die alte Serie";
+        text = "Für Sie gibt es für beide Seiten Argumente, aber insgesamt spricht mehr dafür, mit Ihrem Kind die alte Serie zu schauen.";
+      } else if (points <= 5) {
+        heading = "Ihre Empfehlung: Eher die neue Serie";
+        text = "Für Sie gibt es für beide Seiten Argumente, aber insgesamt spricht mehr dafür, mit Ihrem Kind die neue Serie zu schauen.";
+      } else {
+        heading = "Ihre Empfehlung: Die neue Serie";
+        text = "Die neue Serie ist eindeutig das Richtige für Ihr Kind!";
+      }
+
+      content.innerHTML = `
+        <div class="result">
+          <h2>${heading}</h2>
+          <div class="score">Auswertung: ${points} von 7 Punkten</div>
+          <p>${text}</p>
+          <button class="restart" type="button" onclick="restartQuiz()">
+            Fragebogen neu starten
+          </button>
+        </div>
+      `;
+    }
+
+    function restartQuiz() {
+      currentQuestion = 0;
+      points = 0;
+      showQuestion();
+    }
+
+    showQuestion();
+  </script>
+</body>
+</html>
