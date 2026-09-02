@@ -1,0 +1,188 @@
+<div id="film-quiz">
+  <div id="question-container"></div>
+</div>
+
+<style>
+  #film-quiz {
+    max-width: 700px;
+    margin: 20px auto;
+    padding: 30px;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+  }
+
+  #question {
+    font-size: 1.3em;
+    margin-bottom: 25px;
+  }
+
+  .answer-button {
+    padding: 12px 30px;
+    margin: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    border: none;
+    border-radius: 6px;
+    background: #eee;
+  }
+
+  .answer-button:hover {
+    background: #ddd;
+  }
+
+  #result {
+    font-size: 1.2em;
+    line-height: 1.5;
+  }
+
+  #restart {
+    margin-top: 20px;
+    padding: 10px 20px;
+    cursor: pointer;
+    border: none;
+    border-radius: 6px;
+  }
+</style>
+
+<script>
+  // Fragen und Punkte
+  const questions = [
+    {
+      text: "Mir ist es wichtig, die Medienzeit auf ein Minimum zu beschränken.",
+      yes: 1,
+      no: 0
+    },
+    {
+      text: "Ich bevorzuge ein möglichst ruhiges Erzähltempo.",
+      yes: 0,
+      no: 1
+    },
+    {
+      text: "Mein Kind gruselt sich schnell.",
+      yes: 1,
+      no: 0
+    },
+    {
+      text: "Mein Kind braucht viel Action, um sich nicht zu langweilen.",
+      yes: 1,
+      no: 0
+    },
+    {
+      text: "Mein Kind soll nicht mit Aussagen veralteter Pädagogik konfrontiert werden.",
+      yes: 1,
+      no: 0
+    },
+    {
+      text: "Ich mag keine hektischen Bildfolgen.",
+      yes: 0,
+      no: 1
+    },
+    {
+      text: "Ich möchte, dass mein Kind viel über die Natur lernt.",
+      yes: 0,
+      no: 1
+    }
+  ];
+
+  let currentQuestion = 0;
+  let points = 0;
+
+  const container = document.getElementById("question-container");
+
+  // Aktuelle Frage anzeigen
+  function showQuestion() {
+    if (currentQuestion >= questions.length) {
+      showResult();
+      return;
+    }
+
+    const question = questions[currentQuestion];
+
+    container.innerHTML = `
+      <div id="question">
+        <strong>Frage ${currentQuestion + 1} von ${questions.length}</strong>
+        <br><br>
+        ${question.text}
+      </div>
+
+      <button class="answer-button" onclick="answer('yes')">
+        Ja
+      </button>
+
+      <button class="answer-button" onclick="answer('no')">
+        Nein
+      </button>
+    `;
+  }
+
+  // Antwort auswerten
+  function answer(choice) {
+    const question = questions[currentQuestion];
+
+    if (choice === "yes") {
+      points += question.yes;
+    } else {
+      points += question.no;
+    }
+
+    currentQuestion++;
+
+    showQuestion();
+  }
+
+  // Ergebnis anzeigen
+  function showResult() {
+    let resultText = "";
+
+    if (points <= 1) {
+      resultText =
+        "Schauen Sie mit Ihrem Kind die alte Serie!";
+    } 
+    else if (points <= 3) {
+      resultText =
+        "Für Sie gibt es für beide Seiten Argumente, " +
+        "aber insgesamt spricht mehr dafür, mit Ihrem Kind " +
+        "die alte Serie zu schauen.";
+    } 
+    else if (points <= 5) {
+      resultText =
+        "Für Sie gibt es für beide Seiten Argumente, " +
+        "aber insgesamt spricht mehr dafür, mit Ihrem Kind " +
+        "die neue Serie zu schauen.";
+    } 
+    else {
+      resultText =
+        "Die neue Serie ist eindeutig das Richtige für Ihr Kind!";
+    }
+
+    container.innerHTML = `
+      <div id="result">
+        <h2>Ihre Auswertung</h2>
+
+        <p>
+          Sie haben <strong>${points} von 7 Punkten</strong> erreicht.
+        </p>
+
+        <p>
+          ${resultText}
+        </p>
+
+        <button id="restart" onclick="restartQuiz()">
+          Fragebogen neu starten
+        </button>
+      </div>
+    `;
+  }
+
+  // Fragebogen zurücksetzen
+  function restartQuiz() {
+    currentQuestion = 0;
+    points = 0;
+    showQuestion();
+  }
+
+  // Fragebogen starten
+  showQuestion();
+</script>
